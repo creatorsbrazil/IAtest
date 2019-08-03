@@ -19,12 +19,11 @@ vermelho = (0, 0, 255)
 azul = (255, 0, 0)
 branco = (255, 255, 255)
 
-face_cascade = cv2.CascadeClassifier('data/haarcascade_frontalface_alt.xml')
+face_cascade = cv2.CascadeClassifier('haarcascade/haarcascade_frontalface_alt.xml')
 
 while True:
 
-    img = cv2.imread(
-        "data/crowd-many-people-in-confined-space-at-a-festival-E2HD6H.jpg")
+    img = cv2.imread("images/crowd-many-people-in-confined-space-at-a-festival-E2HD6H.jpg")
     # img = imutils.resize(img, width=900) # redimenciona a entrada
 
     dtStart = datetime.datetime.today()
@@ -50,7 +49,7 @@ while True:
     diff = dtFrame - dtStart
     elapsed_time = int((diff.seconds * 1000) + (diff.microseconds / 1000))
 
-    info = 'Tempo: {} Total: {}ms A {} B {} C {}'.format(
+    info = 'Tempo: {}ms Total: {} A {} B {} C {}'.format(
         elapsed_time, sampleNum, pA / 100, pB, pC)
     cv2.putText(img, info, (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 1.5, branco, 5)
     cv2.putText(img, info, (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 1.5, azul, 2)
