@@ -105,14 +105,17 @@ with open(fileBat, 'a') as bat:
     # FIM for!
 
     bat.write('echo Unificando vetores...\n')
-    cmd = ('py utils/mergevec.py -v ' + vecPath + ' -o ' + vecPath + '/final.vec\n\n')
+    cmd = ('py utils/mergevec.py -v ' + vecPath +
+           ' -o ' + vecPath + '/final.vec\n\n')
     bat.write(cmd)
 
-    bat.write('echo Treinando, isso irá demorar, va tomar um cafe ou varios, e volte depois...\n')
+    bat.write(
+        'echo Treinando, isso irá demorar, va tomar um cafe ou varios, e volte depois...\n')
     cmd = ('cd ' + basePath + '\n'
            '..\\utils\\opencv_traincascade -data data -vec vec/final.vec' +
            ' -bg bg.txt -numPos 2000 -numNeg 1000 -numStages 5 ' +
-           ' -w ' + str(amostraSize)+' -h ' + str(amostraSize) + '\n\n')
+           ' -w ' + str(amostraSize)+' -h ' + str(amostraSize) + '\n\n' +
+           'cd ..\n')
     bat.write(cmd)
 
 input("FIM! Execute o arquivo: " + fileBat)
