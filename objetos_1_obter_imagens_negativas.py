@@ -68,7 +68,7 @@ if os.path.isfile(bg):
 
 with open(bg, 'a') as f:
     for img in os.listdir(basePath+'/negativas'):
-        line = basePath+'/negativas/'+img+'\n'
+        line = 'negativas/'+img+'\n'
         f.write(line)
 
 print('Lista criada negativa em ('+basePath+'bg.txt)')
