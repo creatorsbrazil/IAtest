@@ -59,7 +59,7 @@ for imgurl in imagens_negativas.splitlines():
     except Exception as ex:
         print(str(ex))
 
-print('Imagens negativas baixadas, redimencionadas, e criadas em preto e branco')
+print('Imagens negativas baixadas, e criadas em preto e branco')
 
 # lista um TXT com as imagens a ser usada nas etapa 2
 bg = 'bg.txt'

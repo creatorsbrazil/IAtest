@@ -56,7 +56,7 @@ else:
 fotoPath = os.path.abspath('images/apple')
 numero_imagem = 0
 positivaMaxSize = 200
-amostraSize = (40, 40)
+amostraSize = (30, 30)
 
 # gera as imagens em cinza redimencionando de acordo com a necessidade no tamanho especificado
 for imageName in os.listdir(fotoPath):
@@ -94,13 +94,13 @@ for imageName in os.listdir(fotoPath):
            ' -bg bg.txt ' +
            ' -info ' + infoPath + '/info.lst ' +
            ' -bgcolor 255 -bgthresh 5 -pngoutput info ' +
-           ' -maxxangle 0.5 -maxyangle 0.5 -maxzangle 0.5 -num 1000\n')
+           ' -maxxangle 0.5 -maxyangle 0.5 -maxzangle 0.5 -num 2000\n')
     print(cmd)
     os.system(cmd)
 
     print(n + ': Criando vetores...\n')
     cmd = ('opencv_createsamples -info ' + infoPath + '/info.lst' +
-           ' -num 1000 -w ' + str(amostraSize[0]) + ' -h ' + str(amostraSize[1]) +
+           ' -num 2000 -w ' + str(amostraSize[0]) + ' -h ' + str(amostraSize[1]) +
            ' -vec ' + vecPath + '/positives' + n + '.vec\n')
     print(cmd)
     os.system(cmd)
@@ -115,7 +115,7 @@ os.system(cmd)
 
 print('Treinando... isso ira demorar! va tomar um cafe ou varios...\n')
 cmd = ('opencv_traincascade -data '+dataPath+' -vec '+vecPath+'/final.vec' +
-       ' -bg bg.txt -numPos 2000 -numNeg 1000 -numStages 20 -featureType LBP'+
+       ' -bg bg.txt -numPos 2000 -numNeg 1000 -numStages 10 -featureType LBP'+
        ' -numThreads 8 -precalcValBufSize 2048 -precalcIdxBufSize 2048' +
        ' -w ' + str(amostraSize[0])+' -h ' + str(amostraSize[1]) + '\n')
 print(cmd)
