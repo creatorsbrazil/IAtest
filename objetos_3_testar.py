@@ -2,6 +2,7 @@ import cv2
 import os
 
 #haar_cascade = cv2.CascadeClassifier('haarcascade/haarcascade_frontalface_alt.xml')
+#haar_cascade = cv2.CascadeClassifier('haarcascade/haarcascade_apple.xml')
 haar_cascade = cv2.CascadeClassifier('temp/data/cascade.xml')
 cap = cv2.VideoCapture(0)
 while True:

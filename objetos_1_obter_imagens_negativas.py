@@ -8,16 +8,16 @@ import cv2
 import os
 
 # a pasta 'temp' é um local temporária que será usado para o aprendizado de objetos
-basePath = 'temp'
+tempPath = 'temp'
 
-if not os.path.exists(basePath):
-    os.makedirs(basePath)
+if not os.path.exists(tempPath):
+    os.makedirs(tempPath)
 
-pathPB = basePath+'/negativas'
+pathPB = tempPath+'/negativas'
 if not os.path.exists(pathPB):
     os.makedirs(pathPB)
 
-pathOriginal = basePath+'/negativas/originais'
+pathOriginal = tempPath+'/negativas/originais'
 if not os.path.exists(pathOriginal):
     os.makedirs(pathOriginal)
 
@@ -31,7 +31,7 @@ imagens_negativas = urllib.request.urlopen(url_imagens).read().decode()
 # Caso ocorra qualquer erro ao baixar alguma imagem, mas não tem problema.
 
 numero_imagem = 1
-image_size = (300, 300)
+# image_size = (400, 400)
 for imgurl in imagens_negativas.splitlines():
     try:
         n = str(numero_imagem)
@@ -52,9 +52,9 @@ for imgurl in imagens_negativas.splitlines():
         imagemPB = pathPB + '/' + n + '.jpg'
         if os.path.isfile(original) and not os.path.isfile(imagemPB):
             print(n + ': Gerando negativa: ' + imagemPB)
-            img = cv2.imread(original, cv2.IMREAD_GRAYSCALE)
-            imagem_redimensionada = cv2.resize(img, image_size)
-            cv2.imwrite(imagemPB, imagem_redimensionada)
+            img2 = cv2.imread(original, cv2.IMREAD_GRAYSCALE)
+            # img2 = cv2.resize(img, image_size)
+            cv2.imwrite(imagemPB, img2)
 
     except Exception as ex:
         print(str(ex))
@@ -62,15 +62,15 @@ for imgurl in imagens_negativas.splitlines():
 print('Imagens negativas baixadas, redimencionadas, e criadas em preto e branco')
 
 # lista um TXT com as imagens a ser usada nas etapa 2
-bg = basePath+'/bg.txt'
+bg = 'bg.txt'
 if os.path.isfile(bg):
     os.remove(bg)
 
 with open(bg, 'a') as f:
-    for img in os.listdir(basePath+'/negativas'):
-        line = 'negativas/'+img+'\n'
+    for img in os.listdir(pathPB):
+        line = pathPB + '/'+img+'\n'
         f.write(line)
 
-print('Lista criada negativa em ('+basePath+'bg.txt)')
+print('Lista criada negativa em (bg.txt)')
 
 input('FIM da etapa 1!')
