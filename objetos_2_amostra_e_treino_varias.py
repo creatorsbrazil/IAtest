@@ -6,7 +6,6 @@
 # Apos executar esse programa execute o run.bat!
 import cv2
 import os
-import subprocess
 
 # a pasta 'temp' é um local temporária que será usado para o aprendizado de objetos
 os.environ["PATH"] += ";C:\\CreatorsBrazil\\IAtest\\utils"
@@ -53,10 +52,11 @@ else:
 
 
 # origem do conhecimento (sempre imagens com fundo branco absoluto 255)
-fotoPath = os.path.abspath('images/apple')
+fotoPath = os.path.abspath('images/torre')
 numero_imagem = 0
-positivaMaxSize = 200
-amostraSize = (30, 30)
+amostraSize = (30, 40)
+positivaMaxSize = max(amostraSize) * 5
+num = 200
 
 # gera as imagens em cinza redimencionando de acordo com a necessidade no tamanho especificado
 for imageName in os.listdir(fotoPath):
@@ -67,8 +67,6 @@ for imageName in os.listdir(fotoPath):
     numero_imagem += 1
     n = str(numero_imagem)
     img = cv2.imread(fotoPath + '/' + imageName, cv2.IMREAD_GRAYSCALE)
-    # 4160x2340 Eventualmente precisa ser redimencionada
-    #img2 = img[100:2100,700:2700]
 
     height, width = img.shape
     if height > width and height > positivaMaxSize:
@@ -93,14 +91,14 @@ for imageName in os.listdir(fotoPath):
     cmd = ('opencv_createsamples -img ' + arquivo +
            ' -bg bg.txt ' +
            ' -info ' + infoPath + '/info.lst ' +
-           ' -bgcolor 255 -bgthresh 5 -pngoutput info ' +
-           ' -maxxangle 0.5 -maxyangle 0.5 -maxzangle 0.5 -num 2000\n')
+           ' -bgcolor 255 -bgthresh 127 -pngoutput info ' +
+           ' -maxxangle 0.3 -maxyangle 0.3 -maxzangle 0.3 -num '+str(num)+'\n')
     print(cmd)
     os.system(cmd)
 
     print(n + ': Criando vetores...\n')
     cmd = ('opencv_createsamples -info ' + infoPath + '/info.lst' +
-           ' -num 2000 -w ' + str(amostraSize[0]) + ' -h ' + str(amostraSize[1]) +
+           ' -num '+str(num)+' -w ' + str(amostraSize[0]) + ' -h ' + str(amostraSize[1]) +
            ' -vec ' + vecPath + '/positives' + n + '.vec\n')
     print(cmd)
     os.system(cmd)
@@ -115,10 +113,11 @@ os.system(cmd)
 
 print('Treinando... isso ira demorar! va tomar um cafe ou varios...\n')
 cmd = ('opencv_traincascade -data '+dataPath+' -vec '+vecPath+'/final.vec' +
-       ' -bg bg.txt -numPos 2000 -numNeg 1000 -numStages 10 -featureType LBP'+
+       ' -bg bg.txt -numPos '+str(num)+' -numNeg '+str(num)+' -numStages 10 ' +
+       ' -stageType BOOST -featureType HAAR'+ # ADABOOST / LBP
        ' -numThreads 8 -precalcValBufSize 2048 -precalcIdxBufSize 2048' +
        ' -w ' + str(amostraSize[0])+' -h ' + str(amostraSize[1]) + '\n')
 print(cmd)
 os.system(cmd)
 
-input("FIM!")
+print("FIM!")

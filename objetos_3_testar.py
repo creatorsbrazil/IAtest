@@ -28,6 +28,9 @@ class xmlHaarCascade:
 colorPos = 0
 haars = []
 for xml in os.listdir(haarPath):
+    if not xml.endswith('.xml'):
+        continue
+
     haars.append(xmlHaarCascade(xml, colorPos))
     colorPos += 1
     if colorPos >= len(colors):
@@ -40,11 +43,10 @@ while True:
     for haar in haars:
         objetos = haar.cascade.detectMultiScale(
             gray,        # Matrix of the type CV_8U containing an image where objects are detected
-            1.05,        # scaleFactor – Parameter specifying how much the image size is reduced at each image scale
-            2,           # minNeighbors – Parameter specifying how many neighbors each candidate rectangle should have to retain it
-            0,           # Parameter with the same meaning for an old cascade as in the function cvHaarDetectObjects. It is not used for a new cascade
-            # minSize – Minimum possible object size. Objects smaller than that are ignored.
-            (30, 30),
+            1.1,         # scaleFactor – Parameter specifying how much the image size is reduced at each image scale
+            5,           # minNeighbors – Parameter specifying how many neighbors each candidate rectangle should have to retain it
+            0,           # It is not used for a new cascade
+            (30, 30),    # minSize – Minimum possible object size. Objects smaller than that are ignored.
             (100, 100))  # maxSize – Maximum possible object size. Objects larger than that are ignored.
 
         for (x, y, w, h) in objetos:

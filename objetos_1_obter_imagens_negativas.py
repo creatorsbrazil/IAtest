@@ -3,7 +3,6 @@
 # Leia as explicações direto com o autor original, aqui é apenas uma livre adaptação para estudo
 
 import urllib.request
-import numpy as np
 import cv2
 import os
 
@@ -17,48 +16,60 @@ pathPB = tempPath+'/negativas'
 if not os.path.exists(pathPB):
     os.makedirs(pathPB)
 
-pathOriginal = tempPath+'/negativas/originais'
-if not os.path.exists(pathOriginal):
-    os.makedirs(pathOriginal)
+originalPath = tempPath+'/negativas/originais'
+if not os.path.exists(originalPath):
+    os.makedirs(originalPath)
 
 # este é um banco de imagem publico que será usado para criar imagens negativas
-url_imagens = 'http://image-net.org/api/text/imagenet.synset.geturls?wnid=n07942152'
-imagens_negativas = urllib.request.urlopen(url_imagens).read().decode()
+url_imagens = 'http://image-net.org/api/text/imagenet.synset.geturls?wnid=n07942152' # pessoas
+# url_imagens = 'http://image-net.org/api/text/imagenet.synset.geturls?wnid=n01503061' # passaros
+# url_imagens = 'http://image-net.org/api/text/imagenet.synset.geturls?wnid=n00017222' # plantas
+# url_imagens = 'http://image-net.org/api/text/imagenet.synset.geturls?wnid=n03365991' # construções
+# url_imagens = 'http://image-net.org/api/text/imagenet.synset.geturls?wnid=n00015388' # Animais
+
+imagens_negativas = urllib.request.urlopen(url_imagens).read().decode().splitlines()
+# imagens_negativas = [] # para gerar apenas as imagen Preto e Branca
 
 # Logico que por questão de performance e otimização, só serão baixada uma vez as imagens
 # Todo treino acontece sempre com as imagem em preto e branco.
 # Essas imagens poderão ser usadas para treino de qualquer objeto.
 # Caso ocorra qualquer erro ao baixar alguma imagem, mas não tem problema.
 
-numero_imagem = 1
+numero_imagem = 2000
 # image_size = (400, 400)
-for imgurl in imagens_negativas.splitlines():
+for imgurl in imagens_negativas:
+    n = str(numero_imagem)
+    numero_imagem += 1
+    original = originalPath + '/' + n + '.jpg'
+    if not os.path.isfile(original):
+        print(n + ': Baixando: ' + imgurl)
+        try:
+            a, b = urllib.request.urlretrieve(imgurl, original)
+
+        except Exception as ex:
+            print(str(ex))
+
+
+numero_imagem = 1
+for original in os.listdir(originalPath):
     try:
         n = str(numero_imagem)
         numero_imagem += 1
-        original = pathOriginal + '/' + n + '.jpg'
-        if not os.path.isfile(original):
-            print(n + ': Baixando: ' + imgurl)
-            try:
-                a, b = urllib.request.urlretrieve(imgurl, original)
-                size = b['Content-Length']
-                # imagens muito pequenas são descartadas por terem pouca informação
-                if int(size) < 3000:
-                    os.remove(original)
-
-            except Exception as ex:
-                print(str(ex))
-
         imagemPB = pathPB + '/' + n + '.jpg'
-        if os.path.isfile(original) and not os.path.isfile(imagemPB):
-            print(n + ': Gerando negativa: ' + imagemPB)
-            img2 = cv2.imread(original, cv2.IMREAD_GRAYSCALE)
-            # img2 = cv2.resize(img, image_size)
-            cv2.imwrite(imagemPB, img2)
+        if not os.path.isfile(imagemPB):
+            img2 = cv2.imread(originalPath + '/' + original, cv2.IMREAD_GRAYSCALE)
+            height, width = img2.shape
+            if height > 300 and width > 300:
+                print('Gerando negativa: ' + imagemPB)
+                # img2 = cv2.resize(img, image_size)
+                cv2.imwrite(imagemPB, img2)
+            else:
+                os.remove(original)
 
     except Exception as ex:
         print(str(ex))
 
+        
 print('Imagens negativas baixadas, e criadas em preto e branco')
 
 # lista um TXT com as imagens a ser usada nas etapa 2
@@ -73,4 +84,4 @@ with open(bg, 'a') as f:
 
 print('Lista criada negativa em (bg.txt)')
 
-input('FIM da etapa 1!')
+print('FIM da etapa 1!')

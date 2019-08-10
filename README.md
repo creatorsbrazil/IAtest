@@ -29,3 +29,4 @@ Veja mais
 * [Exemplo 1](http://note.sonots.com/SciSoftware/haartraining.html)
 * [Exemplo 2](https://coding-robin.de/2013/07/22/train-your-own-opencv-haar-classifier.html)
 * [Exemplo 3](https://codeyarns.com/2014/09/01/how-to-train-opencv-cascade-classifier)
+* [Exemplo 4](https://www.learnopencv.com/training-better-haar-lbp-cascade-eye-detector-opencv/)
