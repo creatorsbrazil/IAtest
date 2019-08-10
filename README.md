@@ -24,8 +24,8 @@ Os exemplos de aprendizado de objetos está dividido em 3 arquivos:
 
 Veja mais
 
-[DOC 2.4 Open CV Traincascade](https://docs.opencv.org/2.4/doc/user_guide/ug_traincascade.html)
-[DOC 3.3 Open CV Traincascade](https://docs.opencv.org/3.3.0/dc/d88/tutorial_traincascade.html)
-[Exemplo 1](http://note.sonots.com/SciSoftware/haartraining.html)
-[Exemplo 2](https://coding-robin.de/2013/07/22/train-your-own-opencv-haar-classifier.html)
-[Exemplo 3](https://codeyarns.com/2014/09/01/how-to-train-opencv-cascade-classifier)
+* [DOC 2.4 Open CV Traincascade](https://docs.opencv.org/2.4/doc/user_guide/ug_traincascade.html)
+* [DOC 3.3 Open CV Traincascade](https://docs.opencv.org/3.3.0/dc/d88/tutorial_traincascade.html)
+* [Exemplo 1](http://note.sonots.com/SciSoftware/haartraining.html)
+* [Exemplo 2](https://coding-robin.de/2013/07/22/train-your-own-opencv-haar-classifier.html)
+* [Exemplo 3](https://codeyarns.com/2014/09/01/how-to-train-opencv-cascade-classifier)

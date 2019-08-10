@@ -1,20 +1,60 @@
 import cv2
 import os
 
-#haar_cascade = cv2.CascadeClassifier('haarcascade/haarcascade_frontalface_alt.xml')
-#haar_cascade = cv2.CascadeClassifier('haarcascade/haarcascade_apple.xml')
-haar_cascade = cv2.CascadeClassifier('temp/data/cascade.xml')
+haarPath: str = 'haarcascade'
+colors = (
+    (255, 0, 0),
+    (0, 255, 0),
+    (0, 0, 255),
+    (255, 255, 0),
+    (0, 255, 255),
+    (255, 0, 255),
+    (127, 0, 0),
+    (0, 127, 0),
+    (0, 0, 127),
+    (127, 127, 0),
+    (0, 127, 127),
+    (127, 0, 127)
+)
+
+
+class xmlHaarCascade:
+    def __init__(self, xml: str, pos: int):
+        self.name = xml.replace('haarcascade_', '').replace('.xml', '')
+        self.cascade = cv2.CascadeClassifier(haarPath+'/' + xml)
+        self.color = colors[pos]
+
+
+colorPos = 0
+haars = []
+for xml in os.listdir(haarPath):
+    haars.append(xmlHaarCascade(xml, colorPos))
+    colorPos += 1
+    if colorPos >= len(colors):
+        colorPos = 0
+
 cap = cv2.VideoCapture(0)
 while True:
     ret, img = cap.read()
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    objetos = haar_cascade.detectMultiScale(gray, 1.1, 5)
-    for (x,y,w,h) in objetos:
-        cv2.rectangle(img, (x,y), (x+w, y+h), (255,0,0), 2)
+    for haar in haars:
+        objetos = haar.cascade.detectMultiScale(
+            gray,        # Matrix of the type CV_8U containing an image where objects are detected
+            1.05,        # scaleFactor – Parameter specifying how much the image size is reduced at each image scale
+            2,           # minNeighbors – Parameter specifying how many neighbors each candidate rectangle should have to retain it
+            0,           # Parameter with the same meaning for an old cascade as in the function cvHaarDetectObjects. It is not used for a new cascade
+            # minSize – Minimum possible object size. Objects smaller than that are ignored.
+            (30, 30),
+            (100, 100))  # maxSize – Maximum possible object size. Objects larger than that are ignored.
 
-    cv2.imshow('img',img)
-    k=cv2.waitKey(30)
-    if k==27:
+        for (x, y, w, h) in objetos:
+            cv2.rectangle(img, (x, y), (x+w, y+h), haar.color, 2)
+            cv2.putText(img, haar.name, (x+1, y+12),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.4, haar.color, 1)
+
+    cv2.imshow('img', img)
+    k = cv2.waitKey(1)
+    if k == 27:
         break
 
 cap.release()
