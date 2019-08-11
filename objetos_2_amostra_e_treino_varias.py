@@ -47,6 +47,7 @@ def amostra(imagePath: str, num: str, amostraMax: int, featureType: str):
 
     amostraSize = (0, 0)
     positivaMaxSize = 0
+    finalCascade: str = ''
 
     # origem do conhecimento (sempre imagens com fundo branco absoluto 255)
     # gera as imagens em cinza redimencionando de acordo com a necessidade no tamanho especificado
@@ -74,6 +75,16 @@ def amostra(imagePath: str, num: str, amostraMax: int, featureType: str):
                 amostraSize = (amostraMax, int(amostraMax * height / width))
 
             positivaMaxSize = max(amostraSize) * 5
+
+            finalCascade = ('haarcascade\\' +
+                            imagePath+'_'+featureType+'_'+num +
+                            '_'+str(amostraSize[0])+'x'+str(amostraSize[1])+'.xml')
+
+            if os.path.isfile(finalCascade):
+                print('Arquivo final "'+finalCascade+'" já existe')
+                return
+            else:
+                print('Preparando final "'+finalCascade+'"...')
 
         if height > width and height > positivaMaxSize:
             h = positivaMaxSize
@@ -125,11 +136,9 @@ def amostra(imagePath: str, num: str, amostraMax: int, featureType: str):
     print(cmd)
     os.system(cmd)
 
-    cmd = ('copy '+dataPath+'/cascade.xml haarcascade/' +
-           imagePath+'_'+featureType+'_'+num +
-           '_'+str(amostraSize(0))+'x'+str(amostraSize(1))+'.xml')
+    cmd = ('copy '+dataPath + '\\cascade.xml ' + finalCascade)
     print(cmd)
-    os.system(cmd.replace('/', '\\'))
+    os.system(cmd)
 
 
 if __name__ == '__main__':
