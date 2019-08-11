@@ -27,7 +27,7 @@ areaH = 200
 
 # alem de pessoas, pode-se contar qualquer outro tipo de objeto baseado em qualquer arquivo
 # cascade = cv2.CascadeClassifier('haarcascade/haarcascade_frontalface_alt.xml')
-cascade = cv2.CascadeClassifier('haarcascade/queen.xml')
+cascade = cv2.CascadeClassifier('haarcascade/apple_HAAR_100.xml')
 # cascade = cv2.CascadeClassifier('temp/data/cascade.xml')
 
 # use a linha abaixo para habilitar a camera

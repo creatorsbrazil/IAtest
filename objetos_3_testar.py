@@ -23,6 +23,7 @@ class xmlHaarCascade:
         self.name = xml.replace('haarcascade_', '').replace('.xml', '')
         self.cascade = cv2.CascadeClassifier(haarPath+'/' + xml)
         self.color = colors[pos]
+        print(self.name)
 
 
 colorPos = 0
@@ -41,13 +42,8 @@ while True:
     ret, img = cap.read()
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     for haar in haars:
-        objetos = haar.cascade.detectMultiScale(
-            gray,        # Matrix of the type CV_8U containing an image where objects are detected
-            1.1,         # scaleFactor – Parameter specifying how much the image size is reduced at each image scale
-            5,           # minNeighbors – Parameter specifying how many neighbors each candidate rectangle should have to retain it
-            0,           # It is not used for a new cascade
-            (30, 30),    # minSize – Minimum possible object size. Objects smaller than that are ignored.
-            (100, 100))  # maxSize – Maximum possible object size. Objects larger than that are ignored.
+
+        objetos = haar.cascade.detectMultiScale(gray, 1.05) #, 0, 0, (70, 70), (150, 150))
 
         for (x, y, w, h) in objetos:
             cv2.rectangle(img, (x, y), (x+w, y+h), haar.color, 2)
