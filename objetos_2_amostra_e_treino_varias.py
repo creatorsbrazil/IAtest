@@ -24,12 +24,7 @@ else:
 # Diretório de trabalho das amostras: adiciona a informação nas negativas
 infoPath = tempPath + '/info'
 if not os.path.exists(infoPath):
-    os.makedirs(infoPath)
-else:
-  # apaga tudo sempre ao iniciar um novo tratamento de arquivo
-    for info in os.listdir(infoPath):
-        os.remove(infoPath + '/' + info)
-
+    os.makedirs(infoPath) 
 
 # Diretório para os vetores (conhecimento inicial)
 vecPath = tempPath + '/vec'
@@ -52,17 +47,21 @@ else:
 
 
 # origem do conhecimento (sempre imagens com fundo branco absoluto 255)
-fotoPath = os.path.abspath('images/torre')
+fotoPath = os.path.abspath('images/queen')
 numero_imagem = 0
-amostraSize = (30, 40)
+amostraSize = (20, 30)
 positivaMaxSize = max(amostraSize) * 5
-num = 200
+num = 400
 
 # gera as imagens em cinza redimencionando de acordo com a necessidade no tamanho especificado
 for imageName in os.listdir(fotoPath):
 
     if(not imageName.lower().endswith('.jpg') and not imageName.lower().endswith('.png')):
         continue
+
+     # apaga tudo sempre ao iniciar um novo tratamento de arquivo
+    for info in os.listdir(infoPath):
+        os.remove(infoPath + '/' + info)
 
     numero_imagem += 1
     n = str(numero_imagem)
@@ -84,14 +83,14 @@ for imageName in os.listdir(fotoPath):
               str(width) + ' => ' + str(w) + 'x' + str(h) + ')\n')
         img = cv2.resize(img, (w, h))
 
-    arquivo = positivaPath + '/' + n + '.png'
+    arquivo = positivaPath + '/' + n + '.jpg'
     cv2.imwrite(arquivo, img)
 
     print(n + ': Criando amostras...\n')
     cmd = ('opencv_createsamples -img ' + arquivo +
            ' -bg bg.txt ' +
            ' -info ' + infoPath + '/info.lst ' +
-           ' -bgcolor 255 -bgthresh 127 -pngoutput info ' +
+           ' -bgcolor 255 -bgthresh 160 -pngoutput info ' +
            ' -maxxangle 0.3 -maxyangle 0.3 -maxzangle 0.3 -num '+str(num)+'\n')
     print(cmd)
     os.system(cmd)
@@ -113,8 +112,8 @@ os.system(cmd)
 
 print('Treinando... isso ira demorar! va tomar um cafe ou varios...\n')
 cmd = ('opencv_traincascade -data '+dataPath+' -vec '+vecPath+'/final.vec' +
-       ' -bg bg.txt -numPos '+str(num)+' -numNeg '+str(num)+' -numStages 10 ' +
-       ' -stageType BOOST -featureType HAAR'+ # ADABOOST / LBP
+       ' -bg bg.txt -numPos '+str(num)+' -numNeg '+str(num)+' -numStages 20 ' +
+       ' -stageType BOOST -featureType LBP'+ # ADABOOST / LBP
        ' -numThreads 8 -precalcValBufSize 2048 -precalcIdxBufSize 2048' +
        ' -w ' + str(amostraSize[0])+' -h ' + str(amostraSize[1]) + '\n')
 print(cmd)

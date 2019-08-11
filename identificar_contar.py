@@ -13,8 +13,8 @@ import datetime
 import imutils
 
 pA = 105     # scaleFactor – Parameter specifying how much the image size is reduced at each image scale
-pB = 20      # minNeighbors – Parameter specifying how many neighbors each candidate rectangle should have to retain it
-pS = 100     # Size
+pB = 30      # minNeighbors – Parameter specifying how many neighbors each candidate rectangle should have to retain it
+pS = 20      # Size
 
 vermelho = (0, 0, 255)
 azul = (255, 0, 0)
@@ -27,7 +27,7 @@ areaH = 200
 
 # alem de pessoas, pode-se contar qualquer outro tipo de objeto baseado em qualquer arquivo
 # cascade = cv2.CascadeClassifier('haarcascade/haarcascade_frontalface_alt.xml')
-cascade = cv2.CascadeClassifier('haarcascade/torre4.xml')
+cascade = cv2.CascadeClassifier('haarcascade/queen.xml')
 # cascade = cv2.CascadeClassifier('temp/data/cascade.xml')
 
 # use a linha abaixo para habilitar a camera
