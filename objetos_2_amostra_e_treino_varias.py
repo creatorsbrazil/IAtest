@@ -14,6 +14,14 @@ os.environ["PATH"] += ";C:\\CreatorsBrazil\\IAtest\\utils"
 
 def amostra(imagePath: str, num: str, amostraMax: int, featureType: str):
 
+    cascadePath = 'haarcascade'
+    if not os.path.exists(cascadePath):
+        os.makedirs(cascadePath)
+
+    cascadeVecPath = 'haarcascade/vec'
+    if not os.path.exists(cascadeVecPath):
+        os.makedirs(cascadeVecPath)
+
     positivaPath = tempPath + '/positiva'
     if not os.path.exists(positivaPath):
         os.makedirs(positivaPath)
@@ -47,7 +55,8 @@ def amostra(imagePath: str, num: str, amostraMax: int, featureType: str):
 
     amostraSize = (0, 0)
     positivaMaxSize = 0
-    finalCascade: str = ''
+    finalVEC = ''
+    finalXML = ''
 
     # origem do conhecimento (sempre imagens com fundo branco absoluto 255)
     # gera as imagens em cinza redimencionando de acordo com a necessidade no tamanho especificado
@@ -76,15 +85,26 @@ def amostra(imagePath: str, num: str, amostraMax: int, featureType: str):
 
             positivaMaxSize = max(amostraSize) * 5
 
-            finalCascade = ('haarcascade\\' +
-                            imagePath+'_'+featureType+'_'+num +
-                            '_'+str(amostraSize[0])+'x'+str(amostraSize[1])+'.xml')
+            fileNumSize = ('_' + num + '_' +
+                           str(amostraSize[0]) + 'x' + str(amostraSize[1]))
 
-            if os.path.isfile(finalCascade):
-                print('Arquivo final "'+finalCascade+'" já existe')
+            # Somente o arquivo.VEC e o BG.TXT são necessários para o treino
+            # isso é independente de qualquer outro parametro de treino (featureType)
+            finalVEC = (cascadeVecPath + '/' +
+                        imagePath + fileNumSize + '.vec')
+
+            finalXML = (cascadePath + '/' +
+                        imagePath + '_' + featureType + fileNumSize + '.xml')
+
+            if os.path.isfile(finalXML):
+                print('Arquivo final "' + finalXML + '" já existe')
                 return
+
+            if os.path.isfile(finalVEC):
+                print('Arquivo VEC "' + finalVEC + '" já existe')
+                break
             else:
-                print('Preparando final "'+finalCascade+'"...')
+                print('Preparando final "' + finalXML + '"...')
 
         if height > width and height > positivaMaxSize:
             h = positivaMaxSize
@@ -104,43 +124,50 @@ def amostra(imagePath: str, num: str, amostraMax: int, featureType: str):
         arquivo = positivaPath + '/' + n + '.jpg'
         cv2.imwrite(arquivo, img)
 
-        print(n + ': Criando amostras...\n')
+        print('\n=================== Criando amostras\n')
         cmd = ('opencv_createsamples -img ' + arquivo +
                ' -bg bg.txt ' +
                ' -info ' + infoPath + '/info.lst ' +
+               ' -num ' + num +
                ' -bgcolor 255 -bgthresh 32 -pngoutput info ' +
-               ' -maxxangle 0.3 -maxyangle 0.3 -maxzangle 0.3 -num '+num)
-        # print(cmd)
+               ' -maxxangle 0.3 -maxyangle 0.3 -maxzangle 0.3')
+        print(cmd)
         os.system(cmd)
 
-        print(n + ': Criando vetores...\n')
+        print('\n=================== Criando vetor\n')
         cmd = ('opencv_createsamples -info ' + infoPath + '/info.lst' +
                ' -num '+num+' -w ' + str(amostraSize[0]) + ' -h ' + str(amostraSize[1]) +
                ' -vec ' + vecPath + '/positives' + n + '.vec')
-        # print(cmd)
+        print(cmd)
         os.system(cmd)
 
-    print('Unificando vetores...\n')
-    cmd = ('py utils/mergevec.py -v ' + vecPath +
-           ' -o ' + vecPath + '/final.vec')
-    # print(cmd)
-    os.system(cmd)
+    if not os.path.isfile(finalVEC):
+        print('\n=================== Unificando vetores\n')
+        cmd = ('py utils/mergevec.py -v ' + vecPath + ' -o ' + finalVEC)
+        print(cmd)
+        os.system(cmd)
 
-    print('Treinando '+imagePath + '... isso ira demorar!\n')
-    cmd = ('opencv_traincascade -data '+dataPath+' -vec '+vecPath+'/final.vec' +
-           ' -bg bg.txt -numPos '+num+' -numNeg '+num+' -numStages 20 ' +
-           ' -stageType BOOST -featureType ' + featureType +
-           ' -numThreads 8 -precalcValBufSize 2048 -precalcIdxBufSize 2048' +
-           ' -w ' + str(amostraSize[0])+' -h ' + str(amostraSize[1]) + '\n')
+    print('\n=================== Treinando "' + finalXML + '"!\n')
+    cmd = ('opencv_traincascade -data ' + dataPath +
+           ' -vec ' + finalVEC +
+           ' -numPos ' + num +
+           ' -numNeg ' + num +
+           ' -bg bg.txt ' +
+           ' -numStages 20 ' +
+           ' -featureType ' + featureType +
+           ' -precalcValBufSize 4096 -precalcIdxBufSize 4096' +
+           ' -w ' + str(amostraSize[0]) +
+           ' -h ' + str(amostraSize[1]))
 
     print(cmd)
     os.system(cmd)
 
-    cmd = ('copy '+dataPath + '\\cascade.xml ' + finalCascade)
+    cmd = ('copy '+dataPath + '/cascade.xml ' + finalXML).replace('/', '\\')
     print(cmd)
     os.system(cmd)
 
 
+# py objetos_2_amostra_e_treino_varias.py -i torre -n 10 -s 30 -t LBP
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()

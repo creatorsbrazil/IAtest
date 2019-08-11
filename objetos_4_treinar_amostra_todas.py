@@ -12,10 +12,9 @@ for num in (20, 200, 400, 800, 1600):
         print('======================================================')
         print('Processando '+imageName+'...\n')
         
+        # Criar apenas o LBP, pois é mais rapido e depois pode-se criar o HAAR que é mais preciso!
+        # O arquivo .VEC é salvo separadamente e é a unica coisa necessária para o treino
         cmd = ('py objetos_2_amostra_e_treino_varias.py -i '+imageName+ ' -n '+str(num)+' -s 30 -t LBP')
-        os.system(cmd)
-
-        cmd = ('py objetos_2_amostra_e_treino_varias.py -i '+imageName+ ' -n '+str(num)+' -s 30 -t HAAR')
         os.system(cmd)
 
 print("FIM Total!")
