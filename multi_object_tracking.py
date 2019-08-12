@@ -4,6 +4,7 @@
 # python multi_object_tracking.py --video videos/soccer_02.mp4 --tracker csrt
 # python multi_object_tracking.py --video videos/nascar.mp4 --tracker csrt
 # python multi_object_tracking.py --video videos/los_angeles.mp4 --tracker csrt
+# https://www.learnopencv.com/object-tracking-using-opencv-cpp-python/
 
 from imutils.video import VideoStream
 import argparse

@@ -85,8 +85,8 @@ def amostra(imagePath: str, num: str, amostraMax: int, featureType: str):
 
             positivaMaxSize = max(amostraSize) * 5
 
-            fileNumSize = ('_' + num + '_' +
-                           str(amostraSize[0]) + 'x' + str(amostraSize[1]))
+            fileNumSize = (
+                '_' + str(amostraSize[0]) + 'x' + str(amostraSize[1]) + '_' + num)
 
             # Somente o arquivo.VEC e o BG.TXT são necessários para o treino
             # isso é independente de qualquer outro parametro de treino (featureType)
@@ -94,7 +94,7 @@ def amostra(imagePath: str, num: str, amostraMax: int, featureType: str):
                         imagePath + fileNumSize + '.vec')
 
             finalXML = (cascadePath + '/' +
-                        imagePath + '_' + featureType + fileNumSize + '.xml')
+                        imagePath + fileNumSize + '_' + featureType + '.xml')
 
             if os.path.isfile(finalXML):
                 print('Arquivo final "' + finalXML + '" já existe')
@@ -171,10 +171,15 @@ def amostra(imagePath: str, num: str, amostraMax: int, featureType: str):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i', dest='imageFolder')
-    parser.add_argument('-n', dest='sampleNum')
-    parser.add_argument('-s', dest='sampleSize')
-    parser.add_argument('-t', dest='featureType')
+    parser.add_argument('-i', dest='imageFolder',
+                        help="path to input folder with images .jpg")
+    parser.add_argument('-n', dest='sampleNum',
+                        help="number of positives and negatives to use")
+    parser.add_argument('-s', dest='sampleSize', default="40", type=int,
+                        help="max size for final sample")
+    parser.add_argument('-t', dest='featureType', default="LBP",
+                        help="type of feature LBP(default) or HAAR")
+
     args = parser.parse_args()
 
     if not args.imageFolder:
@@ -183,11 +188,5 @@ if __name__ == '__main__':
     elif not args.sampleNum:
         sys.exit('especifique o numero de amostras -n 200')
 
-    elif not args.sampleSize:
-        sys.exit('informe o tamaho maximo da amostras: -s 20 ')
-
-    elif not args.featureType:
-        sys.exit('informe o tipo de algoritimo: -t HAAR/LBP ')
-
     amostra(args.imageFolder, args.sampleNum,
-            int(args.sampleSize), args.featureType)
+            args.sampleSize, args.featureType)

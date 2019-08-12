@@ -31,6 +31,8 @@ haars = []
 for xml in os.listdir(haarPath):
     if not xml.endswith('.xml'):
         continue
+    elif xml.upper().find('800_HAAR')==-1:
+        continue
 
     haars.append(xmlHaarCascade(xml, colorPos))
     colorPos += 1
@@ -38,12 +40,13 @@ for xml in os.listdir(haarPath):
         colorPos = 0
 
 cap = cv2.VideoCapture(0)
+
 while True:
     ret, img = cap.read()
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     for haar in haars:
 
-        objetos = haar.cascade.detectMultiScale(gray, 1.05) #, 0, 0, (70, 70), (150, 150))
+        objetos = haar.cascade.detectMultiScale(gray, 1.05, 5) #, 0, (70, 70), (150, 150))
 
         for (x, y, w, h) in objetos:
             cv2.rectangle(img, (x, y), (x+w, y+h), haar.color, 2)
