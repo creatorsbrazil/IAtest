@@ -20,7 +20,7 @@ colors = (
 
 class xmlHaarCascade:
     def __init__(self, xml: str, pos: int):
-        self.name = xml.replace('haarcascade_', '').replace('.xml', '')
+        self.name = xml.replace('haarcascade_', '').replace('.xml', '').split('_')[0]
         self.cascade = cv2.CascadeClassifier(haarPath+'/' + xml)
         self.color = colors[pos]
         print(self.name)
@@ -31,7 +31,7 @@ haars = []
 for xml in os.listdir(haarPath):
     if not xml.endswith('.xml'):
         continue
-    elif xml.upper().find('800_HAAR')==-1:
+    elif xml.upper().find('1600_HAAR')==-1:
         continue
 
     haars.append(xmlHaarCascade(xml, colorPos))
@@ -46,7 +46,7 @@ while True:
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     for haar in haars:
 
-        objetos = haar.cascade.detectMultiScale(gray, 1.05, 5) #, 0, (70, 70), (150, 150))
+        objetos = haar.cascade.detectMultiScale(gray, 1.05, 10) #, 0, (70, 70), (150, 150))
 
         for (x, y, w, h) in objetos:
             cv2.rectangle(img, (x, y), (x+w, y+h), haar.color, 2)
@@ -54,7 +54,7 @@ while True:
                         cv2.FONT_HERSHEY_SIMPLEX, 0.4, haar.color, 1)
 
     cv2.imshow('img', img)
-    k = cv2.waitKey(1)
+    k = cv2.waitKey(30)
     if k == 27:
         break
 
